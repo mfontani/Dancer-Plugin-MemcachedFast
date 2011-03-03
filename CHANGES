@@ -1,0 +1,5 @@
+0.110620 - 2011-03-03
+    * fixed memcached_get_or_set to return the set value
+
+0.110570 - 2011-02-25
+    * Initial version
