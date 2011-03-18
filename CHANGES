@@ -1,3 +1,6 @@
+0.110770 - 2011-03-18
+    * Fixed minimum Dancer version
+
 0.110620 - 2011-03-03
     * fixed memcached_get_or_set to return the set value
 
