@@ -49,7 +49,7 @@ register memcached_set => sub {
     return $cache->set(
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
-        defined $_[2] ? $_[1] : $default_timeout
+        defined $_[2] ? $_[2] : $default_timeout
       ) if ref $_[0] ne 'ARRAY';
     $cache->set_multi(
         map {
@@ -68,7 +68,7 @@ register memcached_add => sub {
     return $cache->add(
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
-        defined $_[2] ? $_[1] : $default_timeout
+        defined $_[2] ? $_[2] : $default_timeout
       ) if ref $_[0] ne 'ARRAY';
     $cache->add_multi(
         map {
@@ -87,7 +87,7 @@ register memcached_replace => sub {
     return $cache->replace(
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
-        defined $_[2] ? $_[1] : $default_timeout
+        defined $_[2] ? $_[2] : $default_timeout
       ) if ref $_[0] ne 'ARRAY';
     $cache->replace_multi(
         map {
