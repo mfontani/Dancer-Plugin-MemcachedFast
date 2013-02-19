@@ -1,3 +1,7 @@
+0.130500 - 2013-02-19
+    * Fixed cache expiry bug
+    * Updated docs re: setting cache to never expire
+
 0.110770 - 2011-03-18
     * Fixed minimum Dancer version
 
