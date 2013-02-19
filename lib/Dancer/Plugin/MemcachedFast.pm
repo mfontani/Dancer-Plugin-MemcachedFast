@@ -262,6 +262,15 @@ In your app:
         template 'meaning' => { meaning => $meaning };
     };
 
+=head1 TIMEOUTS
+
+You can set the default timeout via the configuration, as explained in the
+L<SYNOPSIS> section. The default is 3600 seconds.
+
+If you want to cache a value for as long as there is memory available to
+Memcache, you can achieve that by passing C<0> as the expiration parameter (not
+C<undef>, as that just uses the C<default_timeout>).
+
 =head1 KEYWORDS
 
 =head2 memcached_get_or_set
@@ -298,7 +307,8 @@ Sets unconditionally a key to a given value. A coderef may be used also,
 and its return value will be used. Alternatively, provide an arrayref
 for it to use C<set_multi> on it. Takes an optional third value indicating
 the number of seconds the key will be cached for, or the default number
-of seconds.
+of seconds. You can use an expiration value of C<0> to mean that the value
+should never expire from the cache.
 
     memcached_set('meaningoflife', 42);
     memcached_set('meaningoflife', sub { 21 * 2 });
