@@ -10,12 +10,12 @@ use Cache::Memcached::Fast;
 
 my $default_timeout = 3600;
 my $ok_to_compress  = 0;
-my $cache = do {
+my $cache           = do {
     my $config = plugin_setting;
     $config->{servers} = [ $ENV{HAVE_TEST_MEMCACHED_SERVER_LOCALHOST} ]
-        if exists $ENV{HAVE_TEST_MEMCACHED_SERVER_LOCALHOST};
+      if exists $ENV{HAVE_TEST_MEMCACHED_SERVER_LOCALHOST};
     $default_timeout = delete $config->{default_timeout}
-        if exists $config->{default_timeout};
+      if exists $config->{default_timeout};
     $ok_to_compress =
       (       defined $config->{compress_threshold}
           and int( $config->{compress_threshold} ) > 1
@@ -25,25 +25,30 @@ my $cache = do {
 
 register memcached_compress => sub {
     unless ($ok_to_compress) {
-        warn "Cannot compress. Check the 'compress_threshold' and 'compress_method' configuration options";
+        warn
+"Cannot compress. Check the 'compress_threshold' and 'compress_method' configuration options";
         return;
-    };
-    $cache->compress(!!$_[0])
+    }
+    $cache->compress( !!$_[0] );
 };
 
 register memcached_get_or_set => sub {
     $cache->get( $_[0] )
-      or do { my $ret; $cache->set( $_[0], $ret = ref $_[1] eq 'CODE' ? $_[1]->() : $_[1] ); $ret }
+      or do {
+        my $ret;
+        $cache->set( $_[0], $ret = ref $_[1] eq 'CODE' ? $_[1]->() : $_[1] );
+        $ret;
+      }
       or $_[1];
 };
 
 register memcached_get => sub {
-    return $cache->get($_[0]) if $#_ == 0 and !ref $_[0];
+    return $cache->get( $_[0] ) if $#_ == 0 and !ref $_[0];
     $cache->get_multi( map { ref $_ and ref $_ eq 'ARRAY' ? @$_ : $_ } @_ );
 };
 
 register memcached_gets => sub {
-    return $cache->gets($_[0]) if $#_ == 0 and !ref $_[0];
+    return $cache->gets( $_[0] ) if $#_ == 0 and !ref $_[0];
     $cache->gets_multi( map { ref $_ and ref $_ eq 'ARRAY' ? @$_ : $_ } @_ );
 };
 
@@ -52,7 +57,7 @@ register memcached_set => sub {
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
         defined $_[2] ? $_[2] : $default_timeout
-      ) if ref $_[0] ne 'ARRAY';
+    ) if ref $_[0] ne 'ARRAY';
     $cache->set_multi(
         map {
             [
@@ -60,9 +65,7 @@ register memcached_set => sub {
                 ref $_->[1] eq 'CODE' ? $_->[1]->() : $_->[1],
                 defined $_->[2] ? $_->[2] : $default_timeout
             ]
-          } grep {
-            ref $_ eq 'ARRAY'
-          } @_
+        } grep { ref $_ eq 'ARRAY' } @_
     );
 };
 
@@ -71,7 +74,7 @@ register memcached_add => sub {
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
         defined $_[2] ? $_[2] : $default_timeout
-      ) if ref $_[0] ne 'ARRAY';
+    ) if ref $_[0] ne 'ARRAY';
     $cache->add_multi(
         map {
             [
@@ -79,9 +82,7 @@ register memcached_add => sub {
                 ref $_->[1] eq 'CODE' ? $_->[1]->() : $_->[1],
                 defined $_->[2] ? $_->[2] : $default_timeout
             ]
-          } grep {
-            ref $_ eq 'ARRAY'
-          } @_
+        } grep { ref $_ eq 'ARRAY' } @_
     );
 };
 
@@ -90,7 +91,7 @@ register memcached_replace => sub {
         $_[0],
         ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
         defined $_[2] ? $_[2] : $default_timeout
-      ) if ref $_[0] ne 'ARRAY';
+    ) if ref $_[0] ne 'ARRAY';
     $cache->replace_multi(
         map {
             [
@@ -98,72 +99,59 @@ register memcached_replace => sub {
                 ref $_->[1] eq 'CODE' ? $_->[1]->() : $_->[1],
                 defined $_->[2] ? $_->[2] : $default_timeout
             ]
-          } grep {
-            ref $_ eq 'ARRAY'
-          } @_
+        } grep { ref $_ eq 'ARRAY' } @_
     );
 };
 
 register memcached_delete => sub {
-    return $cache->delete($_[0])
-        if $#_ == 0 and !ref $_[0];
-    $cache->delete_multi(
-        map {
-            (ref $_ and ref $_ eq 'ARRAY') ?  @$_ : $_
-        } @_
-    )
+    return $cache->delete( $_[0] )
+      if $#_ == 0 and !ref $_[0];
+    $cache->delete_multi( map { ( ref $_ and ref $_ eq 'ARRAY' ) ? @$_ : $_ }
+          @_ );
 };
 
 register memcached_append => sub {
     return $cache->append(@_)
-        if ($#_ == 1 and !ref $_[0] and !ref $_[1]);
-    $cache->append_multi(
-        grep { ref $_ eq 'ARRAY' } @_
-    )
+      if ( $#_ == 1 and !ref $_[0] and !ref $_[1] );
+    $cache->append_multi( grep { ref $_ eq 'ARRAY' } @_ );
 };
 
 register memcached_prepend => sub {
     return $cache->prepend(@_)
-        if ($#_ == 1 and !ref $_[0] and !ref $_[1]);
-    $cache->prepend_multi(
-        grep { ref $_ eq 'ARRAY' } @_
-    )
+      if ( $#_ == 1 and !ref $_[0] and !ref $_[1] );
+    $cache->prepend_multi( grep { ref $_ eq 'ARRAY' } @_ );
 };
 
 register memcached_incr => sub {
     return $cache->incr(@_)
-        if ($#_ <= 2 and scalar grep { !ref $_ } @_ );
-    $cache->incr_multi(
-        grep { ref $_ eq 'ARRAY' } @_
-    )
+      if ( $#_ <= 2 and scalar grep { !ref $_ } @_ );
+    $cache->incr_multi( grep { ref $_ eq 'ARRAY' } @_ );
 };
 
 register memcached_decr => sub {
     return $cache->decr(@_)
-        if ($#_ <= 2 and scalar grep { !ref $_ } @_ );
-    $cache->decr_multi(
-        grep { ref $_ eq 'ARRAY' } @_
-    )
+      if ( $#_ <= 2 and scalar grep { !ref $_ } @_ );
+    $cache->decr_multi( grep { ref $_ eq 'ARRAY' } @_ );
 };
 
 register memcached_flush_all => sub {
-    $cache->flush_all(@_)
+    $cache->flush_all(@_);
 };
 
 register memcached_nowait_push => sub {
-    $cache->nowait_push
+    $cache->nowait_push;
 };
 
 register memcached_server_versions => sub {
-    $cache->server_versions
+    $cache->server_versions;
 };
 
 register memcached_disconnect_all => sub {
-    $cache->disconnect_all
+    $cache->disconnect_all;
 };
 
 register memcached_namespace => sub {
-    $cache->namespace($_[0])
+    $cache->namespace( $_[0] );
 };
 
 register_plugin;
