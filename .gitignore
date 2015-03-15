@@ -1,2 +1,5 @@
 *.swp
 *~
+.build
+*.tar.gz
+Dancer-Plugin-MemcachedFast-*
