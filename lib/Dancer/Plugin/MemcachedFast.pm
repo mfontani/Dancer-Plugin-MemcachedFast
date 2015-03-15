@@ -406,3 +406,15 @@ returns the old value.
     # $current_prefix eq $old_prefix
     $current_prefix = memcached_namespace;
     # $current_prefix eq 'test:'
+
+=head1 CONTRIBUTORS
+
+Nikolay Mishin <mi@ya.ru>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Marco FONTANI.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
