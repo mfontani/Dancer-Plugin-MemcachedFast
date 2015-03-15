@@ -1,4 +1,5 @@
 package Dancer::Plugin::MemcachedFast;
+$Dancer::Plugin::MemcachedFast::VERSION = '0.150730';
 use strict;
 use warnings;
 
@@ -251,11 +252,6 @@ In your app:
         my $meaning = memcached_get('meaningoflife');
         template 'meaning' => { meaning => $meaning };
     };
-
-=head1 DESCRIPTION
-
-This plugin allows Dancer to use L<Cache::Memcached::Fast> to get and store content
-on a number of memcached servers.
 
 =head1 TIMEOUTS
 
