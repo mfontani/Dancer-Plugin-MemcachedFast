@@ -1,4 +1,5 @@
 package Dancer::Plugin::MemcachedFast;
+
 use strict;
 use warnings;
 
