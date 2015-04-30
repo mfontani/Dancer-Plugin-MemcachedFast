@@ -33,9 +33,15 @@ register memcached_compress => sub {
 };
 
 register memcached_get_or_set => sub {
-    $cache->get( $_[0] )
-      or do { my $ret; $cache->set( $_[0], $ret = ref $_[1] eq 'CODE' ? $_[1]->() : $_[1] ); $ret }
-      or $_[1];
+    $cache->get($_[0]) or do {
+        my $ret;
+        $cache->set(
+            $_[0],
+            $ret = ref $_[1] eq 'CODE' ? $_[1]->() : $_[1],
+            defined $_[2]              ? $_[2]     : $default_timeout);
+        $ret;
+        }
+        or $_[1];
 };
 
 register memcached_get => sub {
