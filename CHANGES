@@ -1,3 +1,6 @@
+0.161360 - 2016-05-15
+    * memcached_get_or_sat now transfers key lifetime
+
 0.150740 - 2015-03-15
     * Added ABSTRACT, CONTRIBUTORS, DESCRIPTION & LICENSE
       thanks to Nikolay Mishin <mi@ya.ru>
